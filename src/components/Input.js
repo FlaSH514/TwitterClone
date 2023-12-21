@@ -65,7 +65,6 @@ const Input = () => {
       {user && (
         <div className="flex border-b border-gray-200 p-3 space-x-3">
           <img
-            onClick={signOut}
             src={
               user?.image ||
               "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"

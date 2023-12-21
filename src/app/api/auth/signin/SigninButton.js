@@ -3,8 +3,6 @@ import { getProviders, signIn } from "next-auth/react";
 import LoginForm from "@/components/LoginForm";
 
 const SignInButton = ({ provider }) => {
-  console.log(provider);
-
   return (
     <>
       {provider.name === "Credentials" ? (
