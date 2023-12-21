@@ -17,9 +17,10 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db, storage } from "../../firebase";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { deleteObject, ref } from "firebase/storage";
 const Post = ({ post }) => {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
@@ -47,6 +48,14 @@ const Post = ({ post }) => {
       signIn();
     }
   };
+  const deletePost = async () => {
+    if (window.confirm("Are you sure you want to delete the post?")) {
+      deleteDoc(doc(db, "posts", post.id));
+      if (post.data().image) {
+        deleteObject(ref(storage, `posts/${post.id}/image`));
+      }
+    }
+  };
   return (
     <div className="flex cursor-pointer p-3 border-b border-gray-200 pr-6">
       {/*Image*/}
@@ -71,7 +80,7 @@ const Post = ({ post }) => {
             </span>
             <span className="text-sm text-[14px] sm:text-[15px] hover:underline text-gray-400">
               <Moment format="Do MMMM h:mma">
-                {new Date(post.data().timestamp.seconds * 1000)}
+                {new Date(post?.data().timestamp?.seconds * 1000)}
               </Moment>
             </span>
           </div>
@@ -83,17 +92,25 @@ const Post = ({ post }) => {
           {post.data().text}
         </p>
         {/* Post Image */}
-        <img
-          className="h-[100 em] w-full rounded-2xl hover:brightness-105"
-          width="10000"
-          height="1000"
-          src={post.data().image}
-          alt="post-iamge"
-        />
+        <div className="flex w-full justify-center items-center">
+          {post?.data().image && (
+            <img
+              className="h-[100 em] w-full mx-auto rounded-2xl hover:brightness-105"
+              width="10000"
+              height="1000"
+              src={post.data().image}
+            />
+          )}
+        </div>
         {/* icons */}
         <div className="flex justify-between text-gray-500 p-2">
           <ChatIcon className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-sky-500 hover:bg-sky-100" />
-          <TrashIcon className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-red-600 hover:bg-red-100" />
+          {session?.user.uid === post?.data().id && (
+            <TrashIcon
+              onClick={deletePost}
+              className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-red-600 hover:bg-red-100"
+            />
+          )}
           <div className="flex items-center">
             {hasLiked ? (
               <HeartIconFilled
