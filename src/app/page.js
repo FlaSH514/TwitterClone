@@ -6,6 +6,8 @@ import { getServerSession } from "next-auth/next";
 import { useSession } from "next-auth/react";
 import { options } from "./api/auth/[...nextauth]/options";
 import SignOutButton from "@/components/SignOutButton";
+import CommentModal from "@/components/CommentModal";
+
 async function getNewsArticles() {
   const res = await fetch(
     "https://saurav.tech/NewsAPI/top-headlines/category/health/in.json"
@@ -26,7 +28,8 @@ export default async function Home() {
       <Sidebar />
       <Feed />
       <Widgets newsResults={newsResults.articles} users={users.results} />
-      <SignOutButton />
+      {/* <SignOutButton /> */}
+      <CommentModal />
     </main>
   );
 }

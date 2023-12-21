@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy } from "firebase/firestore";
 import { query } from "firebase/firestore";
 import { db } from "../../firebase";
+import { AnimatePresence, animate, motion } from "framer-motion";
 const Feed = () => {
   // const { data: session } = useSession();
   // const user = session?.user;
@@ -55,9 +56,23 @@ const Feed = () => {
         </div>
       </div>
       <Input />
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
+      <AnimatePresence>
+        {posts.map((post) => (
+          <motion.div
+            key={post.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            {/*
+        Pass the entire post data as a prop to the Post component
+        so that it can decide whether to render based on the data.
+      */}
+            {<Post key={post.id} post={post} />}
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 };
