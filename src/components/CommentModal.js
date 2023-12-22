@@ -5,7 +5,13 @@ import Modal from "react-modal";
 import { XIcon } from "@heroicons/react/outline";
 import { useEffect } from "react";
 import { db } from "../../firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useState } from "react";
 import Moment from "react-moment";
 
@@ -18,12 +24,22 @@ const CommentModal = () => {
   const { data: session } = useSession();
   const user = session?.user;
   const [tweet, setTweet] = useState("");
-  const sendComment = () => {};
   useEffect(() => {
     onSnapshot(doc(db, "posts", postId), (snapshot) => {
       setPosts(snapshot);
     });
   }, [postId, db]);
+  async function sendComment() {
+    await addDoc(collection(db, "posts", postId, "comments"), {
+      comment: tweet,
+      name: session?.user?.name,
+      username: session?.user?.username,
+      userImg: session?.user?.image,
+      timestamp: serverTimestamp(),
+    });
+    setOpen(false);
+    setTweet("");
+  }
   return (
     <>
       {open && (
@@ -63,7 +79,7 @@ const CommentModal = () => {
               </span>
             </div>
             <p className="text-[15px] text-gray-800 sm:text-[16px] ml-[4.5rem] mb-2">
-              {post?.data().text}
+              {post?.data()?.text}
             </p>
             <div className="flex  border-b border-gray-200 p-3 space-x-3">
               <img

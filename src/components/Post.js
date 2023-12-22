@@ -28,6 +28,7 @@ const Post = ({ post }) => {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
+  const [allComments, setAllComments] = useState([]);
   useEffect(() => {
     onSnapshot(collection(db, "posts", post.id, "likes"), (snapshot) => {
       setLikes(snapshot.docs);
@@ -38,6 +39,11 @@ const Post = ({ post }) => {
       likes.findIndex((like) => like.id === session?.user.uid) !== -1
     );
   }, [likes]);
+  useEffect(() => {
+    onSnapshot(collection(db, "posts", post.id, "comments"), (snapshot) => {
+      setAllComments(snapshot.docs);
+    });
+  }, [db]);
   const likePosts = async () => {
     if (session) {
       if (hasLiked) {
@@ -72,7 +78,7 @@ const Post = ({ post }) => {
         alt="user-image"
       />
       {/* Right side */}
-      <div className="">
+      <div className="flex-1">
         {/* Header */}
         <div className=" flex items-center justify-between ">
           {/*  user info*/}
@@ -109,16 +115,21 @@ const Post = ({ post }) => {
         </div>
         {/* icons */}
         <div className="flex justify-between text-gray-500 p-2">
-          <ChatIcon
-            onClick={() => {
-              if (!session) signIn();
-              else {
-                setOpen(!open);
-                setPostId(post.id);
-              }
-            }}
-            className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-sky-500 hover:bg-sky-100"
-          />
+          <div className="flex items-center">
+            <ChatIcon
+              onClick={() => {
+                if (!session) signIn();
+                else {
+                  setOpen(!open);
+                  setPostId(post.id);
+                }
+              }}
+              className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-sky-500 hover:bg-sky-100"
+            />
+            {allComments.length > 0 && (
+              <span className="select-none text-sm">{allComments.length}</span>
+            )}
+          </div>
           {session?.user.uid === post?.data().id && (
             <TrashIcon
               onClick={deletePost}
