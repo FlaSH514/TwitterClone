@@ -10,9 +10,10 @@ import SignOutButton from "@/components/SignOutButton";
 import CommentModal from "@/components/CommentModal";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { db } from "../../../../firebase";
-import { doc } from "firebase/firestore";
+import { collection, doc, orderBy, query } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
 import Post from "@/components/Post";
+import Comment from "@/components/Comment";
 async function getNewsArticles() {
   const res = await fetch(
     "https://saurav.tech/NewsAPI/top-headlines/category/health/in.json"
@@ -29,6 +30,7 @@ export default function PostPage() {
   const [newsResults, setNewsResults] = useState([]);
   const [users, setUsers] = useState([]);
   const [post, setPost] = useState();
+  const [comments, setComments] = useState();
   const router = useRouter();
   const { id } = useParams();
   const fetchData = async () => {
@@ -37,13 +39,24 @@ export default function PostPage() {
     setNewsResults(newsData);
     setUsers(usersData);
   };
+
   useEffect(() => {
     fetchData();
   }, []);
+  //Get the post data
   useEffect(() => {
     onSnapshot(doc(db, "posts", id), (snapshot) => {
       setPost(snapshot);
     });
+  }, [db, id]);
+  useEffect(() => {
+    onSnapshot(
+      query(
+        collection(db, "posts", id, "comments"),
+        orderBy("timestamp", "desc")
+      ),
+      (snapshot) => setComments(snapshot.docs)
+    );
   }, [db, id]);
   return (
     <main className="flex min-h-screen max-w-full mx-auto">
@@ -61,6 +74,17 @@ export default function PostPage() {
           </h2>
         </div>
         <Post id={id} post={post} />
+        {comments?.length > 0 &&
+          comments?.map((comment) => (
+            <div key={comment?.id} className="">
+              <Comment
+                key={comment?.id}
+                commentId={comment?.id}
+                originalPostId={id}
+                comment={comment?.data()}
+              />
+            </div>
+          ))}
       </div>
       <Widgets newsResults={newsResults.articles} users={users.results} />
       <SignOutButton />
