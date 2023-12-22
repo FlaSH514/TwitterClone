@@ -69,7 +69,7 @@ const Feed = () => {
         Pass the entire post data as a prop to the Post component
         so that it can decide whether to render based on the data.
       */}
-            {<Post key={post.id} post={post} />}
+            {<Post key={post.id} id={post.id} post={post} />}
           </motion.div>
         ))}
       </AnimatePresence>

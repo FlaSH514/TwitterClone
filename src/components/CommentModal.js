@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import { useState } from "react";
 import Moment from "react-moment";
-
+import { useRouter } from "next/navigation";
 import { EmojiHappyIcon, PhotographIcon } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
 const CommentModal = () => {
@@ -24,6 +24,7 @@ const CommentModal = () => {
   const { data: session } = useSession();
   const user = session?.user;
   const [tweet, setTweet] = useState("");
+  const router = useRouter();
   useEffect(() => {
     onSnapshot(doc(db, "posts", postId), (snapshot) => {
       setPosts(snapshot);
@@ -39,6 +40,7 @@ const CommentModal = () => {
     });
     setOpen(false);
     setTweet("");
+    router.push(`/posts/${postId}`);
   }
   return (
     <>

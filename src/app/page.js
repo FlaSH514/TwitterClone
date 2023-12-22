@@ -2,9 +2,7 @@ import Image from "next/image";
 import Sidebar from "@/components/Sidebar.js";
 import Feed from "@/components/Feed";
 import Widgets from "@/components/Widgets";
-import { getServerSession } from "next-auth/next";
-import { useSession } from "next-auth/react";
-import { options } from "./api/auth/[...nextauth]/options";
+
 import SignOutButton from "@/components/SignOutButton";
 import CommentModal from "@/components/CommentModal";
 

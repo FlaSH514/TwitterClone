@@ -24,13 +24,15 @@ import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../atom/modalAtom";
 import { postIdState } from "../../atom/modalAtom";
-const Post = ({ post }) => {
+import { useRouter } from "next/navigation";
+const Post = ({ post, id }) => {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [allComments, setAllComments] = useState([]);
+  const router = useRouter;
   useEffect(() => {
-    onSnapshot(collection(db, "posts", post.id, "likes"), (snapshot) => {
+    onSnapshot(collection(db, "posts", id, "likes"), (snapshot) => {
       setLikes(snapshot.docs);
     });
   }, [db]);
@@ -40,17 +42,17 @@ const Post = ({ post }) => {
     );
   }, [likes]);
   useEffect(() => {
-    onSnapshot(collection(db, "posts", post.id, "comments"), (snapshot) => {
+    onSnapshot(collection(db, "posts", id, "comments"), (snapshot) => {
       setAllComments(snapshot.docs);
     });
   }, [db]);
   const likePosts = async () => {
     if (session) {
       if (hasLiked) {
-        await deleteDoc(doc(db, "posts", post.id, "likes", session?.user.uid));
+        await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid));
       } else {
-        await setDoc(doc(db, "posts", post.id, "likes", session?.user.uid), {
-          username: session.user.username,
+        await setDoc(doc(db, "posts", id, "likes", session?.user.uid), {
+          username: session?.user.username,
         });
       }
     } else {
@@ -59,10 +61,11 @@ const Post = ({ post }) => {
   };
   const deletePost = async () => {
     if (window.confirm("Are you sure you want to delete the post?")) {
-      deleteDoc(doc(db, "posts", post.id));
-      if (post.data().image) {
-        deleteObject(ref(storage, `posts/${post.id}/image`));
+      deleteDoc(doc(db, "posts", id));
+      if (post?.data()?.image) {
+        deleteObject(ref(storage, `posts/${id}/image`));
       }
+      router.push("/");
     }
   };
   const [open, setOpen] = useRecoilState(modalState);
@@ -74,7 +77,7 @@ const Post = ({ post }) => {
         width={"50"}
         height={"50"}
         className="h-11 w-11 rounded-full mr-4 hover:brightness-95"
-        src={post.data().userImg}
+        src={post?.data()?.userImg}
         alt="user-image"
       />
       {/* Right side */}
@@ -84,10 +87,10 @@ const Post = ({ post }) => {
           {/*  user info*/}
           <div className="flex items-center space-x-3 whitespace-nowrap">
             <h4 className="font-bold text-[15px] sm:text-[16px] hover:underline">
-              {post.data().name}
+              {post?.data()?.name}
             </h4>
             <span className="text-sm text-[14px] sm:text-[15px] text-gray-700">
-              @{post.data().username}
+              @{post?.data()?.username}
             </span>
             <span className="text-sm text-[14px] sm:text-[15px] hover:underline text-gray-400">
               <Moment format="Do MMMM h:mma">
@@ -100,16 +103,16 @@ const Post = ({ post }) => {
         </div>
         {/* Post text */}
         <p className="text-gray-800 text-[15px] sm:text-[16px] mb-2">
-          {post.data().text}
+          {post?.data()?.text}
         </p>
         {/* Post Image */}
         <div className="flex w-full justify-center items-center">
-          {post?.data().image && (
+          {post?.data()?.image && (
             <img
               className="h-[100 em] w-full mx-auto rounded-2xl hover:brightness-105"
               width="10000"
               height="1000"
-              src={post.data().image}
+              src={post?.data()?.image}
             />
           )}
         </div>
@@ -121,7 +124,7 @@ const Post = ({ post }) => {
                 if (!session) signIn();
                 else {
                   setOpen(!open);
-                  setPostId(post.id);
+                  setPostId(id);
                 }
               }}
               className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-sky-500 hover:bg-sky-100"
@@ -130,7 +133,7 @@ const Post = ({ post }) => {
               <span className="select-none text-sm">{allComments.length}</span>
             )}
           </div>
-          {session?.user.uid === post?.data().id && (
+          {session?.user?.uid === post?.data()?.id && (
             <TrashIcon
               onClick={deletePost}
               className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-red-600 hover:bg-red-100"

@@ -24,7 +24,7 @@ const Widgets = ({ newsResults, users }) => {
         <h4 className="font-bold text-lg px-4 pt-2">{`What's Happening...`}</h4>
         <div className=" border-b-2"></div>
         <AnimatePresence>
-          {newsResults.slice(0, articleNumber).map((article) => (
+          {newsResults?.slice(0, articleNumber).map((article) => (
             <motion.div
               key={article.id}
               initial={{ opacity: 0 }}
@@ -48,7 +48,7 @@ const Widgets = ({ newsResults, users }) => {
       <div className="text-gray-700 space-y-3 bg-gray-100 pt-2 rounded-xl w-[90%] xl:w-[75%]">
         <h4 className="font-bold text-xl px-4">You can Follow...</h4>
         <AnimatePresence>
-          {users.slice(0, usersNumber).map((user) => (
+          {users?.slice(0, usersNumber).map((user) => (
             <motion.div
               key={user.login.username}
               initial={{ opacity: 0 }}
