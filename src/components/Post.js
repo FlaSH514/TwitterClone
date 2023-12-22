@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../atom/modalAtom";
-
+import { postIdState } from "../../atom/modalAtom";
 const Post = ({ post }) => {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
@@ -60,6 +60,7 @@ const Post = ({ post }) => {
     }
   };
   const [open, setOpen] = useRecoilState(modalState);
+  const [postId, setPostId] = useRecoilState(postIdState);
   return (
     <div className="flex cursor-pointer p-3 border-b border-gray-200 pr-6">
       {/*Image*/}
@@ -109,7 +110,13 @@ const Post = ({ post }) => {
         {/* icons */}
         <div className="flex justify-between text-gray-500 p-2">
           <ChatIcon
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              if (!session) signIn();
+              else {
+                setOpen(!open);
+                setPostId(post.id);
+              }
+            }}
             className="h-9 w-9 hoverEffect p-2 xl:h-10 xl:w-10 hover:text-sky-500 hover:bg-sky-100"
           />
           {session?.user.uid === post?.data().id && (

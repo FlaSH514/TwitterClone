@@ -28,7 +28,7 @@ export default async function Home() {
       <Sidebar />
       <Feed />
       <Widgets newsResults={newsResults.articles} users={users.results} />
-      {/* <SignOutButton /> */}
+      <SignOutButton />
       <CommentModal />
     </main>
   );
