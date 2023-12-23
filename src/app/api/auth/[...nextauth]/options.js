@@ -36,7 +36,7 @@ export const options = {
   secret: process.env.NEXTAUTH_SECRET,
   // logger: { level: "debug" },
   pages: {
-    signIn: "/api/auth/signin",
+    signIn: "auth/signin",
   },
   callbacks: {
     async session({ session, token }) {
@@ -45,6 +45,9 @@ export const options = {
         .join("")
         .toLocaleLowerCase();
       session.user.uid = token.sub;
+      if (!session.error) {
+        session.user.redirectURL = "/";
+      }
       return session;
     },
   },
