@@ -26,7 +26,7 @@ const Widgets = ({ newsResults, users }) => {
         <AnimatePresence>
           {newsResults?.slice(0, articleNumber).map((article) => (
             <motion.div
-              key={article.id}
+              key={article.title}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -50,14 +50,14 @@ const Widgets = ({ newsResults, users }) => {
         <AnimatePresence>
           {users?.slice(0, usersNumber).map((user) => (
             <motion.div
-              key={user.login.username}
+              key={user.login.uid + user.name.first}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
               <div
-                key={user.login.uid}
+                key={user.login.uid + user.name.first}
                 className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-200 "
               >
                 <img

@@ -3,7 +3,7 @@ import Image from "next/image";
 const News = ({ article }) => {
   return (
     <div className="mb-1 border-b-2">
-      <a href={article.url} target="blank">
+      <a rel="noreferrer" href={article.url} target="blank">
         <div className="flex items-center justify-between px-4  space-x-1 hover:bg-gray-200 transition duration-200">
           <div className="space-y-0.3">
             <h6 className="text-sm font-bold">{article.title}</h6>

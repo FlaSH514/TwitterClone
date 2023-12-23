@@ -12,6 +12,7 @@ import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { db } from "../../../../firebase";
 import { collection, doc, orderBy, query } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
+import { AnimatePresence } from "framer-motion";
 import Post from "@/components/Post";
 import Comment from "@/components/Comment";
 async function getNewsArticles() {
@@ -74,17 +75,28 @@ export default function PostPage() {
           </h2>
         </div>
         <Post id={id} post={post} />
-        {comments?.length > 0 &&
-          comments?.map((comment) => (
-            <div key={comment?.id} className="">
-              <Comment
-                key={comment?.id}
-                commentId={comment?.id}
-                originalPostId={id}
-                comment={comment?.data()}
-              />
-            </div>
-          ))}
+        {comments?.length > 0 && (
+          <div className="">
+            <AnimatePresence>
+              {comments.map((comment) => (
+                <motion.div
+                  key={comment.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1 }}
+                >
+                  <Comment
+                    key={comment.id}
+                    commentId={comment.id}
+                    originalPostId={id}
+                    comment={comment.data()}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
       <Widgets newsResults={newsResults.articles} users={users.results} />
       <SignOutButton />

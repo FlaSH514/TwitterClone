@@ -30,7 +30,7 @@ const Post = ({ post, id }) => {
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [allComments, setAllComments] = useState([]);
-  const router = useRouter;
+  const router = useRouter();
 
   useEffect(() => {
     onSnapshot(collection(db, "posts", id, "likes"), (snapshot) => {
@@ -104,7 +104,7 @@ const Post = ({ post, id }) => {
         </div>
         {/* Post text */}
         <p
-          onClick={`/posts/${id}`}
+          onClick={() => router.push(`/posts/${id}`)}
           className="text-gray-800 text-[15px] sm:text-[16px] mb-2"
         >
           {post?.data()?.text}

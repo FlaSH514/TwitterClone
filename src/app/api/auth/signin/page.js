@@ -19,7 +19,9 @@ const SignIn = async () => {
         </div>
         <div>
           {Object.values(providers).map((provider) => (
-            <SignInButton key={provider.id} provider={provider} />
+            <div key={provider.id} className="">
+              <SignInButton key={provider.id} provider={provider} />
+            </div>
           ))}
         </div>
       </div>

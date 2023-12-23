@@ -29,6 +29,7 @@ const Sidebar = () => {
             "https://help.twitter.com/content/dam/help-twitter/brand/logo.png"
           }
           alt="twitter logo"
+          priority
         ></Image>
       </div>
       {/* {Menu} */}
