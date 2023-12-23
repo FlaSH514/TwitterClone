@@ -12,7 +12,7 @@ import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { db } from "../../../../firebase";
 import { collection, doc, orderBy, query } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Post from "@/components/Post";
 import Comment from "@/components/Comment";
 async function getNewsArticles() {
