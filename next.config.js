@@ -23,6 +23,16 @@ const nextConfig = {
         hostname: "images.unsplash.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "images.livemint.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn0.iconfinder.com",
+        pathname: "**",
+      },
     ],
   },
 };
